@@ -6,16 +6,19 @@ import { fetchCovidData } from "@/services/disease";
 
 const STATISTICS: (keyof CovidData)[] = ["confirmed", "active", "recovered"];
 
-const DisplayStatistics = () => {
+type DisplayStatisticsProps = {
+  countryCode: string;
+};
+
+const DisplayStatistics = ({ countryCode }: DisplayStatisticsProps) => {
   const [covidData, setCovidData] = useState<CovidData | null>(null);
 
   useEffect(() => {
-    fetchCovidData("US").then((data) => setCovidData(data));
-  }, []);
+    fetchCovidData(countryCode).then((data) => setCovidData(data));
+  }, [countryCode]);
 
   return (
     <div className="flex w-full justify-between flex-col sm:flex-row gap-5">
-      {/* 👀 Map over STATISTICS instead of repeating cards */}
       {STATISTICS.map((statistic) => (
         <Card className="w-full" key={statistic}>
           <CardHeader>
@@ -29,7 +32,7 @@ const DisplayStatistics = () => {
               </AvatarFallback>
             </Avatar>
             <div className="text-2xl">
-              {(covidData?.[statistic] as number).toLocaleString()}
+              {covidData?.[statistic]?.toLocaleString()}
             </div>
           </CardContent>
         </Card>
